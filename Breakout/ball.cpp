@@ -57,14 +57,14 @@ void CBall::SetActive( bool bActive )
 //-----------------------------------------------------------------------------
 void CBall::Killed( void )
 {
-    m_vecVelocity = vec2_origin;
+	m_vecVelocity = vec2_origin;
 
-    if ( m_pOwner )
-    {
-        m_pOwner->OnBallLost();
-    }
+	if ( m_pOwner )
+	{
+		m_pOwner->OnBallLost();
+	}
 
-    Remove();
+	Remove();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,19 +112,19 @@ void CBall::UpdateOnRemove( void )
 //-----------------------------------------------------------------------------
 void CBall::ProcessMovement( void )
 {
-    // Follow player until we go active.
-    if ( !IsActive() && m_pOwner )
-    {
-        m_vecVelocity = vec2_origin;
-        Vector vecDir;
-        AngleVectors( m_pOwner->GetAngle(), &vecDir );
-        Vector vecBallOrigin = m_pOwner->GetOrigin() + vecDir * 25.0f;
-        SetOrigin( vecBallOrigin );
-    }
+	// Follow player until we go active.
+	if ( !IsActive() && m_pOwner )
+	{
+		m_vecVelocity = vec2_origin;
+		Vector vecDir;
+		AngleVectors( m_pOwner->GetAngle(), &vecDir );
+		Vector vecBallOrigin = m_pOwner->GetOrigin() + vecDir * 25.0f;
+		SetOrigin( vecBallOrigin );
+	}
 
 	m_bDeflected = false;
 
-    CBaseEntity::ProcessMovement();
+	CBaseEntity::ProcessMovement();
 }
 
 //-----------------------------------------------------------------------------
@@ -202,9 +202,9 @@ void CBall::TouchScreenEdge( const Vector &vecPoint )
 	Vector vecMaxs = vecPoint + GetMaxs();
 
 	if ( vecMaxs.y > g_ScreenRect.height )
-    {
-        Bounce( 0 );
-    }
+	{
+		Bounce( 0 );
+	}
 	else if ( vecMins.y < 0 )
 	{
 		Bounce( 1 );

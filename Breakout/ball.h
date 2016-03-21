@@ -22,10 +22,10 @@ public:
 	bool	IsActive( void );
 	void	SetActive( bool bActive );
 	void	Bounce( int iSide );
-	void    Killed( void );
+	void	Killed( void );
 
 	virtual void	UpdateOnRemove( void );
-	virtual void    ProcessMovement( void );
+	virtual void	ProcessMovement( void );
 	virtual void	Touch( CBaseEntity *pOther );
 	virtual void	TouchScreenEdge( const Vector &vecPoint );
 

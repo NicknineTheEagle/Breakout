@@ -100,7 +100,7 @@ void CPlayer::IncrementScore( int nScore )
 void CPlayer::CreateBall( void )
 {
 	Vector vecDir;
-    AngleVectors( m_flAngle, &vecDir );
+	AngleVectors( m_flAngle, &vecDir );
 	Vector vecBallOrigin = GetOrigin() + vecDir * 25.0f;
 	CBall *pBall = CreateEntity<CBall>( vecBallOrigin, vec2_origin );
 	assert( pBall );
@@ -124,14 +124,14 @@ void CPlayer::LaunchBall( CBall *pBall )
 //-----------------------------------------------------------------------------
 void CPlayer::OnBallLost( void )
 {
-    // TODO: Subtract a life.
+	// TODO: Subtract a life.
 
 	// Losing a ball in Versus causes a score penalty.
 	m_nScore -= BALL_LOST_PENALTY;
 	g_HUDScoreAccount.AddNumber( -BALL_LOST_PENALTY, m_pBall->GetOrigin() );
 
-    // Create a new ball.
-    CreateBall();
+	// Create a new ball.
+	CreateBall();
 }
 
 //-----------------------------------------------------------------------------

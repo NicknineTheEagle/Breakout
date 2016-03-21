@@ -39,7 +39,7 @@ public:
 	void	SetBall( CBall *pBall ) { m_pBall = pBall; }
 	void	CreateBall( void );
 	void	LaunchBall( CBall *pBall );
-	void    OnBallLost( void );
+	void	OnBallLost( void );
 
 	virtual void	ProcessMovement( void );
 

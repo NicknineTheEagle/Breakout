@@ -16,35 +16,35 @@ bool IsBoxIntersectingBox( const Vector& boxMin1, const Vector& boxMax1,
 
 bool IsSpaceEmpty( CBaseEntity *pEntity )
 {
-    bool bEmpty = true;
+	bool bEmpty = true;
 
-    Vector vecMins, vecMaxs;
-    pEntity->GetAbsBounds( &vecMins, &vecMaxs );
+	Vector vecMins, vecMaxs;
+	pEntity->GetAbsBounds( &vecMins, &vecMaxs );
 
-    // World bounds!
-    if ( !g_ScreenRect.contains( vecMins ) || !g_ScreenRect.contains( vecMaxs ) )
-    {
-        // Screen edges are always solid.
+	// World bounds!
+	if ( !g_ScreenRect.contains( vecMins ) || !g_ScreenRect.contains( vecMaxs ) )
+	{
+		// Screen edges are always solid.
 		bEmpty = false;
-    }
+	}
 
-    for ( int i = 0; i < MAX_ENTITIES; i++ )
-    {
-        CBaseEntity *pOther = g_EntityList[i];
-        if ( !pOther || pOther == pEntity || pOther->GetSolidType() == SOLID_NO )
-            continue;
+	for ( int i = 0; i < MAX_ENTITIES; i++ )
+	{
+		CBaseEntity *pOther = g_EntityList[i];
+		if ( !pOther || pOther == pEntity || pOther->GetSolidType() == SOLID_NO )
+			continue;
 
-        Vector vecOtherMins, vecOtherMaxs;
-        pOther->GetAbsBounds( &vecOtherMins, &vecOtherMaxs );
+		Vector vecOtherMins, vecOtherMaxs;
+		pOther->GetAbsBounds( &vecOtherMins, &vecOtherMaxs );
 
-        if ( IsBoxIntersectingBox( vecMins, vecMaxs, vecOtherMins, vecOtherMaxs ) )
-        {
-            if ( pOther->IsSolid() )
-            {
+		if ( IsBoxIntersectingBox( vecMins, vecMaxs, vecOtherMins, vecOtherMaxs ) )
+		{
+			if ( pOther->IsSolid() )
+			{
 				bEmpty = false;
-            }
-        }
-    }
+			}
+		}
+	}
 
 	return bEmpty;
 }

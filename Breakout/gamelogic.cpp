@@ -19,7 +19,7 @@ CGameLogic::CGameLogic()
 	m_bPaused = false;
 	m_bRestart = false;
 	m_iWinningPlayer = -1;
-	
+
 	memset( m_aActivePlayers, 0, MAX_PLAYERS * sizeof( int ) );
 	m_aActivePlayers[0] = PLAYER_HUMAN;
 	m_aActivePlayers[1] = PLAYER_BOT;
@@ -237,7 +237,7 @@ void CGameLogic::GameLoop( void )
 				}
 				else if ( vecPlayers[j + 1]->GetScore() > vecPlayers[j]->GetScore() )
 				{
-					std::swap( vecPlayers[j], vecPlayers[j+1] );
+					std::swap( vecPlayers[j], vecPlayers[j + 1] );
 					bSwapped = true;
 				}
 			}
@@ -278,7 +278,7 @@ void CGameLogic::WinLoop( void )
 			}
 		}
 	}
-	
+
 	g_HUDManager.DrawHUD();
 }
 

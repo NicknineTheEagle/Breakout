@@ -18,8 +18,8 @@ char( *RtlpNumberOf( T( &)[N] ) )[N];
 
 // ARRAYSIZE is more readable version of RTL_NUMBER_OF_V2
 // _ARRAYSIZE is a version useful for anonymous types
-#define ARRAYSIZE(A)    RTL_NUMBER_OF_V2(A)
-#define _ARRAYSIZE(A)   RTL_NUMBER_OF_V1(A)
+#define ARRAYSIZE(A)	RTL_NUMBER_OF_V2(A)
+#define _ARRAYSIZE(A)	RTL_NUMBER_OF_V1(A)
 
 
 #define XRES(x)	( x  * ( ( float )g_ScreenRect.width / 1024.0 ) )

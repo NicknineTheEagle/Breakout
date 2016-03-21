@@ -9,14 +9,14 @@
 
 enum
 {
-    BLOCK_RED = 0,
-    BLOCK_PURPLE,
-    BLOCK_ORANGE,
-    BLOCK_BLUE,
-    BLOCK_BLUE_BRIGHT,
-    BLOCK_GREEN,
-    BLOCK_GREEN_BRIGHT,
-    BLOCK_COUNT
+	BLOCK_RED = 0,
+	BLOCK_PURPLE,
+	BLOCK_ORANGE,
+	BLOCK_BLUE,
+	BLOCK_BLUE_BRIGHT,
+	BLOCK_GREEN,
+	BLOCK_GREEN_BRIGHT,
+	BLOCK_COUNT
 };
 
 class CBlock : public CBaseEntity
@@ -26,13 +26,13 @@ public:
 
 	virtual int		GetEntityID( void ) { return ENTITY_BLOCK; }
 
-	int     GetType( void );
-	void    SetType( int iType );
+	int		GetType( void );
+	void	SetType( int iType );
 
 	virtual void	Touch( CBaseEntity *pOther );
 
 private:
-    int m_iType;
+	int m_iType;
 };
 
 #endif // BLOCK_H

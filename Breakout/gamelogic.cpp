@@ -113,6 +113,7 @@ void CGameLogic::MainLoop( void )
 			g_HUDManager.ResetHUD();
 			StartGame();
 			m_bRestart = false;
+			m_bPaused = false;
 		}
 	}
 }
@@ -273,13 +274,17 @@ void CGameLogic::WinLoop( void )
 			else if ( event.key.code == Keyboard::R )
 			{
 				m_bRestart = true;
-				m_bPaused = false;
 				break;
 			}
 		}
 	}
 
+	m_pMainWindow->clear();
+
+	DrawEntities();
 	g_HUDManager.DrawHUD();
+	
+	m_pMainWindow->display();
 }
 
 void CGameLogic::PauseLoop( void )
@@ -308,7 +313,6 @@ void CGameLogic::PauseLoop( void )
 			else if ( event.key.code == Keyboard::R )
 			{
 				m_bRestart = true;
-				m_bPaused = false;
 				break;
 			}
 		}
@@ -340,6 +344,11 @@ void CGameLogic::StartGame( void )
 	CreateBlocks();
 }
 
+void CGameLogic::RestartGame( void )
+{
+	m_bRestart = true;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -356,7 +365,7 @@ void CGameLogic::ClearEntityList( void )
 }
 
 
-game_controls_t g_aPlayerControls[MAX_PLAYERS] =
+SGameControls g_aPlayerControls[MAX_PLAYERS] =
 {
 	{
 		Keyboard::Up,
@@ -534,9 +543,9 @@ void CGameLogic::DrawEntities( void )
 				Color oldColor = pSprite->getColor();
 				Color newColor;
 				newColor.a = 127;
-				newColor.r = (char)( (float)oldColor.r * 0.75f );
-				newColor.g = (char)( (float)oldColor.g * 0.75f );
-				newColor.b = (char)clamp( (int)oldColor.b + 50, 0, 255 );
+				newColor.r = (Uint8)( (float)oldColor.r * 0.75f );
+				newColor.g = (Uint8)( (float)oldColor.g * 0.75f );
+				newColor.b = oldColor.b + std::min<Uint8>( 50, UCHAR_MAX - oldColor.b );
 
 				pSprite->setColor( newColor );
 				m_pMainWindow->draw( *pSprite );

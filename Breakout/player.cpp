@@ -21,7 +21,7 @@ CPlayer::CPlayer()
 //-----------------------------------------------------------------------------
 // Purpose: Set player's control scheme.
 //-----------------------------------------------------------------------------
-void CPlayer::SetControls( game_controls_t &controls )
+void CPlayer::SetControls( SGameControls &controls )
 {
 	m_PlayerControls = controls;
 }

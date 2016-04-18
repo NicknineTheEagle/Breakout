@@ -23,9 +23,12 @@ private:
 	sf::Text m_textWinHeader;
 	sf::Text m_textWinScores[MAX_PLAYERS * 2];
 	sf::Text m_textWinKeys[2];
+	sf::Text m_textCountdown;
 
 	float m_flScores[MAX_PLAYERS];
 	bool m_bFinishedCounting;
+
+	sf::Clock m_Clock;
 };
 
 extern CWinScreen g_HUDWinScreen;

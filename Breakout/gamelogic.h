@@ -23,6 +23,7 @@ public:
 	void	PauseLoop( void );
 	void	PauseDraw( void );
 	void	StartGame( void );
+	void	RestartGame( void );
 	void	ClearEntityList( void );
 	void	CreatePlayers( void );
 	void	CreateBlocks( void );

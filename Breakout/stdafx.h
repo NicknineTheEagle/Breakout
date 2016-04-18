@@ -5,13 +5,13 @@
 #pragma once
 #endif
 
-#include <stdio.h>
-#include <assert.h>
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdio>
+#include <cassert>
+#include <cmath>
+#include <cfloat>
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
 #include <vector>
 #include <iostream>
 #include <fstream>

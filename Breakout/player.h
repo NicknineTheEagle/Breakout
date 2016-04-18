@@ -11,7 +11,7 @@
 class CBall;
 class CBotManager;
 
-struct game_controls_t
+struct SGameControls
 {
 	sf::Keyboard::Key up;
 	sf::Keyboard::Key down;
@@ -30,7 +30,7 @@ public:
 	virtual int		GetEntityID( void ) { return ENTITY_PLAYER; }
 	virtual	bool	IsPlayer( void ) { return true; }
 
-	void	SetControls( game_controls_t &controls );
+	void	SetControls( SGameControls &controls );
 	void	HandleKeys( void );
 	int		GetScore( void ) { return m_nScore; }
 	void	ResetScore( void );
@@ -48,7 +48,7 @@ protected:
 	CBall			*m_pBall;
 
 private:
-	game_controls_t	m_PlayerControls;
+	SGameControls	m_PlayerControls;
 };
 
 class CBot : public CPlayer

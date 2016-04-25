@@ -25,8 +25,11 @@ private:
 	sf::Text m_textWinKeys[2];
 	sf::Text m_textCountdown;
 
+	sf::Text m_textStats[MAX_PLAYERS];
+
 	float m_flScores[MAX_PLAYERS];
 	bool m_bFinishedCounting;
+	bool m_bShouldAutoRestart;
 
 	sf::Clock m_Clock;
 };

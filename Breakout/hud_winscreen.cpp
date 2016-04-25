@@ -6,10 +6,20 @@
 
 CWinScreen g_HUDWinScreen;
 
+const char *g_aStatNames[] =
+{
+	"Blocks",
+	"Coins",
+	"Deaths"
+};
+
 CWinScreen::CWinScreen()
 {
 	Reset();
 	g_HUDManager.RegisterHUDElement( this );
+
+	m_bShouldAutoRestart = false;
+	m_bFinishedCounting = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -69,6 +79,17 @@ bool CWinScreen::Init( void )
 	sf::FloatRect textBounds = m_textCountdown.getLocalBounds();
 	m_textCountdown.setOrigin( textBounds.width / 2, flFontHeight );
 
+	float flStatsOffset = 0.0f;
+
+	for ( int i = 0; i < MAX_PLAYERS; i++ )
+	{
+		m_textStats[i] = sf::Text( "", g_MainFont, 20 );
+		m_textStats[i].setColor( g_aPlayerColors[i] );
+		m_textStats[i].setPosition( Vector( 0, flStatsOffset ) );
+
+		flStatsOffset += 25.0f;
+	}
+
 	return true;
 }
 
@@ -124,22 +145,27 @@ void CWinScreen::Update( void )
 
 		pWindow->draw( m_textWinScores[index] );
 		pWindow->draw( m_textWinScores[index + 1] );
+
+		g_pGameLogic->GetWindow()->draw( m_textStats[i] );
 	}
 
 	if ( bFinished )
 	{
-		if ( !m_bFinishedCounting )
+		if ( m_bShouldAutoRestart )
 		{
-			m_bFinishedCounting = true;
-			m_Clock.restart();
-		}
-		else
-		{
-			char szTime[64];
-			sprintf( szTime, "Restarting in %.f", ceil( 5.0f - m_Clock.getElapsedTime().asSeconds() ) );
-			m_textCountdown.setString( szTime );
+			if ( !m_bFinishedCounting )
+			{
+				m_bFinishedCounting = true;
+				m_Clock.restart();
+			}
+			else
+			{
+				char szTime[64];
+				sprintf( szTime, "Restarting in %.f", ceil( 5.0f - m_Clock.getElapsedTime().asSeconds() ) );
+				m_textCountdown.setString( szTime );
 
-			pWindow->draw( m_textCountdown );
+				pWindow->draw( m_textCountdown );
+			}
 		}
 
 		for ( size_t i = 0; i < ARRAYSIZE( m_textWinKeys ); i++ )
@@ -148,7 +174,7 @@ void CWinScreen::Update( void )
 		}
 	}
 
-	if ( m_bFinishedCounting && m_Clock.getElapsedTime().asSeconds() >= 5.0f )
+	if ( m_bShouldAutoRestart && m_bFinishedCounting && m_Clock.getElapsedTime().asSeconds() >= 5.0f )
 	{
 		g_pGameLogic->RestartGame();
 	}
@@ -200,6 +226,16 @@ void CWinScreen::SetWinScreenInfo( int iWinningPlayer )
 		m_textWinScores[index + 1].setPosition( m_textWinScores[index].getPosition() + vecOffset );
 
 		flOffset += (float)m_textWinScores[index].getCharacterSize() + 5.0f;
+
+		char szStats[256];
+		sprintf( szStats, "P%d: ", i + 1 );
+		for ( int stat = 0; stat < NUM_STATS; stat++ )
+		{
+			char szBuf[64];
+			sprintf( szBuf, "%s: %d; ", g_aStatNames[stat], pPlayer->GetStat( stat ) );
+			strcat( szStats, szBuf );
+		}
+		m_textStats[i].setString( szStats );
 	}
 
 	flOffset += 20.0f;
@@ -211,4 +247,17 @@ void CWinScreen::SetWinScreenInfo( int iWinningPlayer )
 
 	flOffset += 10.0f;
 	m_textCountdown.setPosition( vecCenter + Vector( 0, flOffset ) );
+
+	// Auto-restart the game if no human player is present.
+	m_bShouldAutoRestart = true;
+	for ( int i = 0; i < MAX_PLAYERS; i++ )
+	{
+		CBaseEntity *pPlayer = g_EntityList[i];
+
+		if ( pPlayer && !pPlayer->IsBot() )
+		{
+			m_bShouldAutoRestart = false;
+			break;
+		}
+	}
 }

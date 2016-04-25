@@ -16,6 +16,7 @@ CPlayer::CPlayer()
 	SetCollisionBounds( -Vector( PLAYER_WIDTH, PLAYER_HEIGHT ), Vector( PLAYER_WIDTH, PLAYER_HEIGHT ) );
 	m_nScore = 0;
 	m_flAngle = 270.0f; // Up.
+	memset( m_Stats, 0, sizeof( int ) * NUM_STATS );
 }
 
 //-----------------------------------------------------------------------------
@@ -129,9 +130,26 @@ void CPlayer::OnBallLost( void )
 	// Losing a ball in Versus causes a score penalty.
 	m_nScore -= BALL_LOST_PENALTY;
 	g_HUDScoreAccount.AddNumber( -BALL_LOST_PENALTY, m_pBall->GetOrigin() );
+	IncrementStat( STAT_BALLS_LOST );
 
 	// Create a new ball.
 	CreateBall();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+void CPlayer::IncrementStat( int iStat, int iAmount /* = 1 */ )
+{
+	m_Stats[iStat] += iAmount;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+void CPlayer::ResetStats( void )
+{
+	memset( m_Stats, 0, sizeof( int ) * NUM_STATS );
 }
 
 //-----------------------------------------------------------------------------

@@ -53,6 +53,7 @@ void CCoin::Touch( CBaseEntity *pOther )
 	{
 		CPlayer *pPlayer = static_cast<CPlayer *>( pOther );
 		pPlayer->IncrementScore( COIN_SCORE );
+		pPlayer->IncrementStat( STAT_COINS_COLLECTED );
 		g_HUDScoreAccount.AddNumber( COIN_SCORE, GetOrigin() );
 
 		Remove();

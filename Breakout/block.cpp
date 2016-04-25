@@ -64,6 +64,7 @@ void CBlock::Touch( CBaseEntity *pOther )
 		{
 			int iScore = s_aBlockScores[GetType()];
 			pOwner->IncrementScore( iScore );
+			pOwner->IncrementStat( STAT_BLOCKS_DESTROYED );
 			g_HUDScoreAccount.AddNumber( iScore, GetOrigin() );
 		}
 

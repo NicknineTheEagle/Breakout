@@ -22,6 +22,14 @@ struct SGameControls
 	sf::Keyboard::Key launch;
 };
 
+enum PlayerStats_t
+{
+	STAT_BLOCKS_DESTROYED = 0,
+	STAT_COINS_COLLECTED,
+	STAT_BALLS_LOST,
+	NUM_STATS
+};
+
 class CPlayer : public CBaseEntity
 {
 public:
@@ -40,6 +48,9 @@ public:
 	void	CreateBall( void );
 	void	LaunchBall( CBall *pBall );
 	void	OnBallLost( void );
+	void	IncrementStat( int iStat, int iAmount = 1 );
+	void	ResetStats( void );
+	int		GetStat( int iStat ) { return m_Stats[iStat]; }
 
 	virtual void	ProcessMovement( void );
 
@@ -49,6 +60,7 @@ protected:
 
 private:
 	SGameControls	m_PlayerControls;
+	int				m_Stats[NUM_STATS];
 };
 
 class CBot : public CPlayer

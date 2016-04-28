@@ -17,9 +17,6 @@ CWinScreen::CWinScreen()
 {
 	Reset();
 	g_HUDManager.RegisterHUDElement( this );
-
-	m_bShouldAutoRestart = false;
-	m_bFinishedCounting = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -28,6 +25,17 @@ CWinScreen::CWinScreen()
 bool CWinScreen::Init( void )
 {
 	Vector vecCenter( g_ScreenRect.width / 2, g_ScreenRect.height / 2 );
+
+	// Winned rounds counters.
+	for ( size_t i = 0; i < MAX_PLAYERS; i++ )
+	{
+		m_textWins[i] = sf::Text( "0", g_MainFont, 40 );
+		m_textWins[i].setColor( g_aPlayerColors[i] );
+
+		float flFontHeight = (float)m_textWins[i].getCharacterSize();
+		sf::FloatRect textBounds = m_textWins[i].getLocalBounds();
+		m_textWins[i].setOrigin( textBounds.width / 2, flFontHeight );
+	}
 
 	// Winner name.
 	m_textWinHeader = sf::Text( "", g_MainFont, 36 );
@@ -64,6 +72,7 @@ bool CWinScreen::Init( void )
 		}
 	}
 
+	// Keys.
 	m_textWinKeys[0] = sf::Text( "R: Restart", g_MainFont, 24 );
 	m_textWinKeys[1] = sf::Text( "Esc: Quit", g_MainFont, 24 );
 
@@ -74,20 +83,18 @@ bool CWinScreen::Init( void )
 		m_textWinKeys[i].setOrigin( textBounds.width / 2, flFontHeight );
 	}
 
+	// Restart countdown.
 	m_textCountdown = sf::Text( "Restarting in 5", g_MainFont, 16 );
 	float flFontHeight = (float)m_textCountdown.getCharacterSize();
 	sf::FloatRect textBounds = m_textCountdown.getLocalBounds();
 	m_textCountdown.setOrigin( textBounds.width / 2, flFontHeight );
 
-	float flStatsOffset = 0.0f;
-
+	// Stats.
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
 		m_textStats[i] = sf::Text( "", g_MainFont, 20 );
 		m_textStats[i].setColor( g_aPlayerColors[i] );
-		m_textStats[i].setPosition( Vector( 0, flStatsOffset ) );
-
-		flStatsOffset += 25.0f;
+		m_textStats[i].setPosition( Vector( (float)( 128 * i ), 0 ) );
 	}
 
 	return true;
@@ -109,7 +116,8 @@ bool CWinScreen::ShouldDraw( void )
 //-----------------------------------------------------------------------------
 void CWinScreen::Reset( void )
 {
-	memset( m_flScores, 0, MAX_PLAYERS * sizeof( float ) );
+	memset( m_flScores, 0, sizeof( float ) * MAX_PLAYERS );
+	m_bShouldAutoRestart = false;
 	m_bFinishedCounting = false;
 }
 
@@ -125,14 +133,15 @@ void CWinScreen::Update( void )
 	bool bFinished = true;
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
-		CPlayer *pPlayer = static_cast<CPlayer *>( g_EntityList[i] );
+		CPlayer *pPlayer = ToPlayer( g_EntityList[i] );
 		if ( !pPlayer )
 			continue;
+
+		pWindow->draw( m_textWins[i] );
 
 		int index = i * 2;
 
 		float flPlayerScore = (float)pPlayer->GetScore();
-
 		if ( flPlayerScore != m_flScores[i] )
 		{
 			m_flScores[i] = Approach( flPlayerScore, m_flScores[i], 1000.0f * g_FrameTime );
@@ -146,11 +155,12 @@ void CWinScreen::Update( void )
 		pWindow->draw( m_textWinScores[index] );
 		pWindow->draw( m_textWinScores[index + 1] );
 
-		g_pGameLogic->GetWindow()->draw( m_textStats[i] );
+		pWindow->draw( m_textStats[i] );
 	}
 
 	if ( bFinished )
 	{
+		// If there're no human players restart the game in 5 seconds.
 		if ( m_bShouldAutoRestart )
 		{
 			if ( !m_bFinishedCounting )
@@ -188,6 +198,7 @@ void CWinScreen::SetWinScreenInfo( int iWinningPlayer )
 {
 	Vector vecCenter( g_ScreenRect.width / 2, g_ScreenRect.height / 2 );
 
+	// Set winner's name.
 	char szWinner[32];
 	if ( iWinningPlayer < MAX_PLAYERS )
 	{
@@ -207,16 +218,31 @@ void CWinScreen::SetWinScreenInfo( int iWinningPlayer )
 	{
 		m_textWinHeader.setColor( g_aPlayerColors[iWinningPlayer] );
 	}
+	else
+	{
+		m_textWinHeader.setColor( sf::Color::White );
+	}
 
 	float flOffset = (float)m_textWinHeader.getCharacterSize() + 5.0f;
+	int iPlayers = CountPlayers();
+	float flWinsOffset = -64.0f * (float)( iPlayers - 1 );
+	float flWinsPos = 0.0f;
 
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
-		CPlayer *pPlayer = static_cast<CPlayer *>( g_EntityList[i] );
+		CPlayer *pPlayer = ToPlayer( g_EntityList[i] );
 		if ( !pPlayer )
 			continue;
 
 		int index = i * 2;
+
+		// Wins counter.
+		m_textWins[i].setPosition( vecCenter + Vector( flWinsOffset + flWinsPos, -128 ) );
+		flWinsPos += 128.0f;
+
+		char szWins[8];
+		sprintf( szWins, "%d", g_pGameLogic->m_iWins[i] );
+		m_textWins[i].setString( szWins );
 
 		// Player name.
 		m_textWinScores[index].setPosition( vecCenter + Vector( -113, flOffset ) );
@@ -227,17 +253,19 @@ void CWinScreen::SetWinScreenInfo( int iWinningPlayer )
 
 		flOffset += (float)m_textWinScores[index].getCharacterSize() + 5.0f;
 
+		// Stats.
 		char szStats[256];
-		sprintf( szStats, "P%d: ", i + 1 );
+		sprintf( szStats, "P%d\n", i + 1 );
 		for ( int stat = 0; stat < NUM_STATS; stat++ )
 		{
 			char szBuf[64];
-			sprintf( szBuf, "%s: %d; ", g_aStatNames[stat], pPlayer->GetStat( stat ) );
+			sprintf( szBuf, "%s: %d\n", g_aStatNames[stat], pPlayer->GetStat( stat ) );
 			strcat( szStats, szBuf );
 		}
 		m_textStats[i].setString( szStats );
 	}
 
+	// Keys.
 	flOffset += 20.0f;
 	for ( size_t i = 0; i < ARRAYSIZE( m_textWinKeys ); i++ )
 	{
@@ -245,6 +273,7 @@ void CWinScreen::SetWinScreenInfo( int iWinningPlayer )
 		flOffset += (float)m_textWinKeys[i].getCharacterSize() + 5.0f;
 	}
 
+	// Restart countdown.
 	flOffset += 10.0f;
 	m_textCountdown.setPosition( vecCenter + Vector( 0, flOffset ) );
 

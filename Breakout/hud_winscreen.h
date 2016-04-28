@@ -20,6 +20,7 @@ public:
 	void	SetWinScreenInfo( int iWinningPlayer );
 
 private:
+	sf::Text m_textWins[MAX_PLAYERS];
 	sf::Text m_textWinHeader;
 	sf::Text m_textWinScores[MAX_PLAYERS * 2];
 	sf::Text m_textWinKeys[2];

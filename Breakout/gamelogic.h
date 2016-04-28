@@ -44,6 +44,7 @@ public:
 
 	int		m_aActivePlayers[MAX_PLAYERS];
 	bool	m_bLessBlocks;
+	int		m_iWins[MAX_PLAYERS];
 
 private:
 	sf::RenderWindow *m_pMainWindow;

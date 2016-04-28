@@ -57,7 +57,7 @@ void CHudScore::Update( void )
 {
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
-		CPlayer *pPlayer = static_cast<CPlayer *>( g_EntityList[i] );
+		CPlayer *pPlayer = ToPlayer( g_EntityList[i] );
 		if ( !pPlayer )
 			continue;
 

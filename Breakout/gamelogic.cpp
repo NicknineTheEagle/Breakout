@@ -24,6 +24,7 @@ CGameLogic::CGameLogic()
 	m_aActivePlayers[0] = PLAYER_HUMAN;
 	m_aActivePlayers[1] = PLAYER_BOT;
 	m_bLessBlocks = false;
+	memset( m_iWins, 0, MAX_PLAYERS * sizeof( int ) );
 }
 
 CGameLogic::~CGameLogic()
@@ -197,8 +198,6 @@ void CGameLogic::GameLoop( void )
 	sprintf( szBuf, "Current time: %.3f\nFPS: %.2f\nSpeed: %.1fx", g_CurTime, ( 1.0f / g_FrameTime ), m_flSpeedMult );
 	Text textDebug( szBuf, g_MainFont, 30 );
 	m_pMainWindow->draw( textDebug );
-
-	float flScorePos = ( (float)textDebug.getCharacterSize() + 5.0f ) * 3;
 #endif
 
 	m_pMainWindow->display();
@@ -219,24 +218,21 @@ void CGameLogic::GameLoop( void )
 		std::vector<CPlayer *> vecPlayers;
 		for ( int i = 0; i < MAX_PLAYERS; i++ )
 		{
-			CPlayer *pPlayer = static_cast<CPlayer *>( g_EntityList[i] );
+			CPlayer *pPlayer = ToPlayer( g_EntityList[i] );
 			if ( pPlayer )
 				vecPlayers.push_back( pPlayer );
 		}
 
+		// Sort players by score.
 		bool bSwapped = true;
 		size_t numLength = vecPlayers.size();
+		assert( numLength != 0 );
 		for ( size_t i = 1; ( i <= numLength ) && bSwapped; i++ )
 		{
 			bSwapped = false;
 			for ( size_t j = 0; j < ( numLength - 1 ); j++ )
 			{
-				if ( vecPlayers[j + 1]->GetScore() == vecPlayers[j]->GetScore() )
-				{
-					m_iWinningPlayer = MAX_PLAYERS;
-					break;
-				}
-				else if ( vecPlayers[j + 1]->GetScore() > vecPlayers[j]->GetScore() )
+				if ( vecPlayers[j + 1]->GetScore() > vecPlayers[j]->GetScore() )
 				{
 					std::swap( vecPlayers[j], vecPlayers[j + 1] );
 					bSwapped = true;
@@ -244,8 +240,15 @@ void CGameLogic::GameLoop( void )
 			}
 		}
 
+		// Check for possible draw.
+		if ( numLength > 1 && vecPlayers[0]->GetScore() == vecPlayers[1]->GetScore() )
+			m_iWinningPlayer = MAX_PLAYERS;
+
 		if ( m_iWinningPlayer == -1 )
+		{
 			m_iWinningPlayer = vecPlayers[0]->entindex();
+			m_iWins[m_iWinningPlayer]++;
+		}
 
 		m_bPaused = true;
 
@@ -283,7 +286,7 @@ void CGameLogic::WinLoop( void )
 
 	DrawEntities();
 	g_HUDManager.DrawHUD();
-	
+
 	m_pMainWindow->display();
 }
 

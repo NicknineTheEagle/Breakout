@@ -8,6 +8,19 @@
 
 #define BALL_LOST_PENALTY 1000
 
+int CountPlayers( void )
+{
+	int count = 0;
+	for ( int i = 0; i < MAX_PLAYERS; i++ )
+	{
+		CPlayer *pPlayer = ToPlayer( g_EntityList[i] );
+		if ( pPlayer )
+			count++;
+	}
+
+	return count;
+}
+
 CPlayer::CPlayer()
 {
 	SetSolid( SOLID_YES );
@@ -17,6 +30,7 @@ CPlayer::CPlayer()
 	m_nScore = 0;
 	m_flAngle = 270.0f; // Up.
 	memset( m_Stats, 0, sizeof( int ) * NUM_STATS );
+	m_pBall = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +153,7 @@ void CPlayer::OnBallLost( void )
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-void CPlayer::IncrementStat( int iStat, int iAmount /* = 1 */ )
+void CPlayer::IncrementStat( int iStat, int iAmount /*= 1*/ )
 {
 	m_Stats[iStat] += iAmount;
 }
@@ -202,7 +216,7 @@ void CBot::RunAI( void )
 		bool bHumanReady = false;
 		for ( int i = 0; i < MAX_PLAYERS; i++ )
 		{
-			CPlayer *pPlayer = static_cast<CPlayer *>( g_EntityList[i] );
+			CPlayer *pPlayer = ToPlayer( g_EntityList[i] );
 			if ( !pPlayer || pPlayer == this )
 				continue;
 
@@ -288,6 +302,13 @@ void CBot::RunAI( void )
 			if ( flDist != 0.0f )
 			{
 				m_vecVelocity = vecTargetDir * PLAYER_SPEED;
+			}
+
+			// Only move as much as we need to so we don't overshoot.
+			float flTravelDist = VectorLength( m_vecVelocity * g_FrameTime );
+			if ( flTravelDist > flDist )
+			{
+				m_vecVelocity *= flDist / flTravelDist;
 			}
 		}
 		else

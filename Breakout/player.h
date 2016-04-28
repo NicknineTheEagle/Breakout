@@ -83,4 +83,17 @@ private:
 	CBaseEntity		*m_pTargetEntity;
 };
 
+inline CPlayer *ToPlayer( CBaseEntity *pEntity )
+{
+	if ( !pEntity || !pEntity->IsPlayer() )
+		return NULL;
+
+	CPlayer *pPlayer = static_cast<CPlayer *>( pEntity );
+	assert( pPlayer == dynamic_cast<CPlayer *>( pEntity ) );
+
+	return pPlayer;
+}
+
+int CountPlayers( void );
+
 #endif // PLAYER_H

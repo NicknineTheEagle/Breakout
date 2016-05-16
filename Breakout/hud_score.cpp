@@ -68,7 +68,7 @@ void CHudScore::Update( void )
 			m_flScores[i] = Approach( flPlayerScore, m_flScores[i], flSpeed * g_FrameTime );
 		}
 
-		char szScore[256];
+		char szScore[64];
 		sprintf( szScore, "P%d SCORE: %.f", i + 1, m_flScores[i] );
 		m_textScores[i].setString( szScore );
 

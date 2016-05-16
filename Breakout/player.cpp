@@ -224,7 +224,7 @@ void CBot::RunAI( void )
 			{
 				bHumanPresent = true;
 
-				if ( pPlayer->GetBall() && pPlayer->GetBall()->IsActive() )
+				if ( ( pPlayer->GetBall() && pPlayer->GetBall()->IsActive() ) || pPlayer->GetStat( STAT_BALLS_LOST ) != 0 )
 				{
 					bHumanReady = true;
 					break;
@@ -304,7 +304,7 @@ void CBot::RunAI( void )
 				m_vecVelocity = vecTargetDir * PLAYER_SPEED;
 			}
 
-			// Only move as much as we need to so we don't overshoot.
+			// Only move as much as required otherwise bot overshoots its target and keeps twitching.
 			float flTravelDist = VectorLength( m_vecVelocity * g_FrameTime );
 			if ( flTravelDist > flDist )
 			{

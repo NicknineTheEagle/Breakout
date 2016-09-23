@@ -6,6 +6,8 @@
 
 CWinScreen g_HUDWinScreen;
 
+#define AUTO_RESTART_DELAY 5.0f
+
 const char *g_aStatNames[] =
 {
 	"Blocks",
@@ -30,7 +32,7 @@ bool CWinScreen::Init( void )
 	for ( size_t i = 0; i < MAX_PLAYERS; i++ )
 	{
 		m_textWins[i] = sf::Text( "0", g_MainFont, 40 );
-		m_textWins[i].setColor( g_aPlayerColors[i] );
+		m_textWins[i].setFillColor( g_aPlayerColors[i] );
 
 		float flFontHeight = (float)m_textWins[i].getCharacterSize();
 		sf::FloatRect textBounds = m_textWins[i].getLocalBounds();
@@ -58,7 +60,7 @@ bool CWinScreen::Init( void )
 			sf::FloatRect textBounds = m_textWinScores[i].getLocalBounds();
 			m_textWinScores[i].setOrigin( 1.0f, flFontHeight );
 			m_textWinScores[i].setPosition( vecCenter + Vector( -113, flOffset ) );
-			m_textWinScores[i].setColor( g_aPlayerColors[i / 2] );
+			m_textWinScores[i].setFillColor( g_aPlayerColors[i / 2] );
 		}
 		else
 		{
@@ -66,7 +68,7 @@ bool CWinScreen::Init( void )
 			m_textWinScores[i].setOrigin( 1.0f, flFontHeight );
 			Vector vecOffset( m_textWinScores[i - 1].getLocalBounds().width + 10, 0 );
 			m_textWinScores[i].setPosition( m_textWinScores[i - 1].getPosition() + vecOffset );
-			m_textWinScores[i].setColor( g_aPlayerColors[( i - 1 ) / 2] );
+			m_textWinScores[i].setFillColor( g_aPlayerColors[( i - 1 ) / 2] );
 
 			flOffset += flFontHeight + 5.0f;
 		}
@@ -93,7 +95,7 @@ bool CWinScreen::Init( void )
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
 		m_textStats[i] = sf::Text( "", g_MainFont, 20 );
-		m_textStats[i].setColor( g_aPlayerColors[i] );
+		m_textStats[i].setFillColor( g_aPlayerColors[i] );
 		m_textStats[i].setPosition( Vector( (float)( 128 * i ), 0 ) );
 	}
 
@@ -171,7 +173,7 @@ void CWinScreen::Update( void )
 			else
 			{
 				char szTime[64];
-				sprintf( szTime, "Restarting in %.f", ceil( 5.0f - m_Clock.getElapsedTime().asSeconds() ) );
+				sprintf( szTime, "Restarting in %.f", ceil( AUTO_RESTART_DELAY - m_Clock.getElapsedTime().asSeconds() ) );
 				m_textCountdown.setString( szTime );
 
 				pWindow->draw( m_textCountdown );
@@ -184,7 +186,7 @@ void CWinScreen::Update( void )
 		}
 	}
 
-	if ( m_bShouldAutoRestart && m_bFinishedCounting && m_Clock.getElapsedTime().asSeconds() >= 5.0f )
+	if ( m_bShouldAutoRestart && m_bFinishedCounting && m_Clock.getElapsedTime().asSeconds() >= AUTO_RESTART_DELAY )
 	{
 		g_pGameLogic->RestartGame();
 	}
@@ -216,11 +218,11 @@ void CWinScreen::SetWinScreenInfo( int iWinningPlayer )
 	m_textWinHeader.setOrigin( textBounds.width / 2.0f, flFontHeight );
 	if ( iWinningPlayer < MAX_PLAYERS )
 	{
-		m_textWinHeader.setColor( g_aPlayerColors[iWinningPlayer] );
+		m_textWinHeader.setFillColor( g_aPlayerColors[iWinningPlayer] );
 	}
 	else
 	{
-		m_textWinHeader.setColor( sf::Color::White );
+		m_textWinHeader.setFillColor( sf::Color::White );
 	}
 
 	float flOffset = (float)m_textWinHeader.getCharacterSize() + 5.0f;

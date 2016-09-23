@@ -110,7 +110,7 @@ void CTextManager::Update( void )
 		sf::FloatRect textBounds = newText.getLocalBounds();
 		newText.setOrigin( textBounds.width / 2.0f, textBounds.height );
 		newText.setPosition( flXPos, flYPos );
-		newText.setColor( deltaColor );
+		newText.setFillColor( deltaColor );
 
 		g_pGameLogic->GetWindow()->draw( newText );
 	}

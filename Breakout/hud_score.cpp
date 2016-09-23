@@ -22,7 +22,7 @@ bool CHudScore::Init( void )
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
 		m_textScores[i] = sf::Text( "", g_MainFont, 30 );
-		m_textScores[i].setColor( g_aPlayerColors[i] );
+		m_textScores[i].setFillColor( g_aPlayerColors[i] );
 		m_textScores[i].setPosition( Vector( 0, flOffset ) );
 
 		flOffset += 35.0f;

@@ -20,13 +20,13 @@ public:
 	void	SetWinScreenInfo( int iWinningPlayer );
 
 private:
-	sf::Text m_textWins[MAX_PLAYERS];
-	sf::Text m_textWinHeader;
-	sf::Text m_textWinScores[MAX_PLAYERS * 2];
-	sf::Text m_textWinKeys[2];
-	sf::Text m_textCountdown;
+	sf::Text *m_textWins[MAX_PLAYERS];
+	sf::Text *m_textWinHeader;
+	sf::Text *m_textWinScores[MAX_PLAYERS * 2];
+	sf::Text *m_textWinKeys[2];
+	sf::Text *m_textCountdown;
 
-	sf::Text m_textStats[MAX_PLAYERS];
+	sf::Text *m_textStats[MAX_PLAYERS];
 
 	float m_flScores[MAX_PLAYERS];
 	bool m_bFinishedCounting;

@@ -20,7 +20,7 @@ public:
 
 private:
 	float m_flScores[MAX_PLAYERS];
-	sf::Text m_textScores[MAX_PLAYERS];
+	sf::Text *m_textScores[MAX_PLAYERS];
 };
 
 #endif HUD_SCORE_H

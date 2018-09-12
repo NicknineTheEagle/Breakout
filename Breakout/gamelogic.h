@@ -56,7 +56,7 @@ private:
 	bool	m_bRestart;
 	int		m_iWinningPlayer;
 
-	sf::Text m_textPause[4];
+	sf::Text *m_textPause[4];
 };
 
 extern CGameLogic *g_pGameLogic;

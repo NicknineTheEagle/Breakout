@@ -21,9 +21,9 @@ bool CHudScore::Init( void )
 
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
-		m_textScores[i] = sf::Text( "", g_MainFont, 30 );
-		m_textScores[i].setFillColor( g_aPlayerColors[i] );
-		m_textScores[i].setPosition( Vector( 0, flOffset ) );
+		m_textScores[i] = new sf::Text( "", g_MainFont, 30 );
+		m_textScores[i]->setFillColor( g_aPlayerColors[i] );
+		m_textScores[i]->setPosition( Vector( 0, flOffset ) );
 
 		flOffset += 35.0f;
 	}
@@ -70,8 +70,8 @@ void CHudScore::Update( void )
 
 		char szScore[64];
 		sprintf( szScore, "P%d SCORE: %.f", i + 1, m_flScores[i] );
-		m_textScores[i].setString( szScore );
+		m_textScores[i]->setString( szScore );
 
-		g_pGameLogic->GetWindow()->draw( m_textScores[i] );
+		g_pGameLogic->GetWindow()->draw( *m_textScores[i] );
 	}
 }

@@ -46,18 +46,18 @@ bool CGameLogic::Init( void )
 
 	Vector vecCenter( g_ScreenRect.width / 2, g_ScreenRect.height / 2 );
 
-	m_textPause[0] = Text( "PAUSED", g_MainFont, 36 );
-	m_textPause[1] = Text( "Esc: Unpause", g_MainFont, 24 );
-	m_textPause[2] = Text( "R: Restart", g_MainFont, 24 );
-	m_textPause[3] = Text( "Q: Quit", g_MainFont, 24 );
+	m_textPause[0] = new Text( "PAUSED", g_MainFont, 36 );
+	m_textPause[1] = new Text( "Esc: Unpause", g_MainFont, 24 );
+	m_textPause[2] = new Text( "R: Restart", g_MainFont, 24 );
+	m_textPause[3] = new Text( "Q: Quit", g_MainFont, 24 );
 
 	float flOffset = 0.0f;
 	for ( size_t i = 0; i < ARRAYSIZE( m_textPause ); i++ )
 	{
-		float flFontHeight = (float)m_textPause[i].getCharacterSize();
-		sf::FloatRect textBounds = m_textPause[i].getLocalBounds();
-		m_textPause[i].setOrigin( textBounds.width / 2.0f, flFontHeight );
-		m_textPause[i].setPosition( vecCenter + Vector( 0, flOffset ) );
+		float flFontHeight = (float)m_textPause[i]->getCharacterSize();
+		sf::FloatRect textBounds = m_textPause[i]->getLocalBounds();
+		m_textPause[i]->setOrigin( textBounds.width / 2.0f, flFontHeight );
+		m_textPause[i]->setPosition( vecCenter + Vector( 0, flOffset ) );
 
 		flOffset += flFontHeight + 5.0f;
 	}
@@ -332,7 +332,7 @@ void CGameLogic::PauseDraw( void )
 
 	for ( size_t i = 0; i < ARRAYSIZE( m_textPause ); i++ )
 	{
-		m_pMainWindow->draw( m_textPause[i] );
+		m_pMainWindow->draw( *m_textPause[i] );
 	}
 
 	m_pMainWindow->display();
